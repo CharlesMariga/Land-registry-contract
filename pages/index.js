@@ -1,5 +1,6 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Example() {
   return (
@@ -17,22 +18,26 @@ export default function Example() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Land registration system
           </h2>
-          <p className="mt-3 text-center">Sign in as:</p>
+          <p className="mt-3 text-center">Login in as:</p>
         </div>
-        <button className="group relative w-full flex justify-center py-5 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          <LockClosedIcon
-            className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400 mr-2"
-            aria-hidden="true"
-          />
-          Administrator
-        </button>
-        <button className="group relative w-full flex justify-center py-5 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          <LockClosedIcon
-            className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400 mr-2"
-            aria-hidden="true"
-          />
-          User
-        </button>
+        <Link href={"/admin"} passHref>
+          <button className="group relative w-full flex justify-center py-5 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <LockClosedIcon
+              className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400 mr-2"
+              aria-hidden="true"
+            />
+            Administrator
+          </button>
+        </Link>
+        <Link href={"/user"} passHref>
+          <button className="group relative w-full flex justify-center py-5 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <LockClosedIcon
+              className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400 mr-2"
+              aria-hidden="true"
+            />
+            User
+          </button>
+        </Link>
       </div>
     </div>
   );
