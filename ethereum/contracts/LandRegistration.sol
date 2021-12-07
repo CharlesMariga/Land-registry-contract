@@ -10,20 +10,26 @@ contract LandRegistration {
         bool active;
     }
     
-    address public superAdmin;
+    address public superAdminAddress;
+    string superAdminPassword;
     mapping (string => Admin) public admins;
     string [] public counties;
     
-    constructor() {
-        superAdmin = msg.sender;
+    constructor(string memory password) {
+        superAdminPassword = password;
+        superAdminAddress = msg.sender;
     }
     
     modifier restrictToSuperAdmin {
-        require(msg.sender == superAdmin);
+        require(msg.sender == superAdminAddress);
         _;
     }
+
+    function getSuperAdminPassword() public view restrictToSuperAdmin returns(string memory) {
+        return superAdminPassword;
+    }
     
-    function addAdmin(string memory firstName, string memory lastName, string memory county, address adminAddress) public  restrictToSuperAdmin {
+    function addAdmin(string memory firstName, string memory lastName, string memory county, address adminAddress) public restrictToSuperAdmin {
         if (!admins[county].isValue) {
             counties.push(county);
         }

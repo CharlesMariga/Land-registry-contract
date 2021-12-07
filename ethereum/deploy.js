@@ -1,6 +1,7 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
 const { abi, evm } = require("./build/LandRegistration.json");
+const bcrypt = require("bcryptjs");
 
 const provider = new HDWalletProvider({
   mnemonic: {
@@ -14,16 +15,24 @@ const provider = new HDWalletProvider({
 const web3 = new Web3(provider);
 
 const deploy = async () => {
-  const accounts = await web3.eth.getAccounts();
-  console.log("Attempting to deploy the contract to account: ", accounts[0]);
+  try {
+    const accounts = await web3.eth.getAccounts();
+    console.log("Attempting to deploy the contract to account: ", accounts[0]);
 
-  const result = await new web3.eth.Contract(abi)
-    .deploy({
-      data: evm.bytecode.object,
-    })
-    .send({ from: accounts[0], gas: "2000000" });
+    const passwordHash = await bcrypt.hash("pass1234", 12);
+    console.log("PasswordHash: ", typeof passwordHash);
 
-  console.log("Contract deployed to ", result.options.address);
+    const result = await new web3.eth.Contract(abi)
+      .deploy({
+        data: evm.bytecode.object,
+        arguments: [passwordHash],
+      })
+      .send({ from: accounts[0], gas: "2000000" });
+
+    console.log("Contract deployed to ", result.options.address);
+  } catch (err) {
+    console.log("ERROR💥💥: ", err);
+  }
 };
 
 deploy();
