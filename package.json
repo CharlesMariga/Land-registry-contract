@@ -10,6 +10,7 @@
     "deploy": "node ./ethereum/deploy.js"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@truffle/hdwallet-provider": "^1.7.0",
     "bcryptjs": "^2.4.3",
