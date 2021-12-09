@@ -1,23 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity > 0.7.0 < 0.9.0;
-
 contract LandRegistration {
     struct Admin {
         string firstName;
         string lastName;
         address adminAddress;
-        bool isValue;
+        string county;
         bool active;
     }
     
     address public superAdminAddress;
     string superAdminPassword;
-    mapping (string => Admin) public admins;
+    mapping (address => Admin) admins;
     string [] public counties;
+    address [] public adminsAdresses;
     
     constructor(string memory password) {
         superAdminPassword = password;
         superAdminAddress = msg.sender;
+    }
+
+    function equal(string memory a, string memory b) private pure returns(bool) {
+        return keccak256(bytes(a)) == keccak256(bytes(b));
     }
     
     modifier restrictToSuperAdmin {
@@ -30,22 +33,32 @@ contract LandRegistration {
     }
     
     function addAdmin(string memory firstName, string memory lastName, string memory county, address adminAddress) public restrictToSuperAdmin {
-        if (!admins[county].isValue) {
+        if (equal(admins[adminAddress].county, "")) {
             counties.push(county);
         }
-        Admin storage newAdmin = admins[county];
+        Admin storage newAdmin = admins[adminAddress];
         newAdmin.firstName = firstName;
         newAdmin.lastName = lastName;
         newAdmin.adminAddress = adminAddress;
-        newAdmin.isValue = true;
+        newAdmin.county = county;
         newAdmin.active = true;
+
+        adminsAdresses.push(address(adminAddress));
+    }
+
+    function getAdmin(address adminAddress) public view restrictToSuperAdmin returns(Admin memory) {
+        return admins[adminAddress];
     }
     
-    function deactivateAdmin(string memory county) public restrictToSuperAdmin {
-        admins[county].active = false;
+    function deactivateAdmin(address adminAddress) public restrictToSuperAdmin {
+        admins[adminAddress].active = false;
     }
     
-    function activateAdmin(string memory county) public restrictToSuperAdmin {
-        admins[county].active = true;
+    function activateAdmin(address adminAddress) public restrictToSuperAdmin {
+        admins[adminAddress].active = true;
+    }
+
+    function getAdminAddresses() public view restrictToSuperAdmin returns(address [] memory) {
+        return adminsAdresses;
     }
 }

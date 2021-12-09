@@ -1,20 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-/* This example requires Tailwind CSS v2.0+ */
-const people = [
-  {
-    name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
-    email: "jane.cooper@example.com",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-  },
-  // More people...
-];
+import { Switch } from "@headlessui/react";
 
-export default function Example() {
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export default function Example({ admins }) {
+  const [enabled, setEnabled] = useState(false);
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -33,7 +26,13 @@ export default function Example() {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Title
+                    Address
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    County
                   </th>
                   <th
                     scope="col"
@@ -41,26 +40,20 @@ export default function Example() {
                   >
                     Status
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Role
-                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {people.map((person) => (
-                  <tr key={person.email}>
+                {admins.map((admin, index) => (
+                  <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
                           <Image
                             className="h-10 w-10 rounded-full"
-                            src={person.image}
+                            src={admin.imageUrl}
                             alt=""
                             height="40"
                             width="40"
@@ -68,29 +61,38 @@ export default function Example() {
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {person.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {person.email}
+                            {`${capitalizeFirstLetter(
+                              admin.firstName
+                            )} ${capitalizeFirstLetter(admin.lastName)}`}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {person.title}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {person.department}
+                        {admin.address}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Active
-                      </span>
+                      <div className="text-sm text-gray-900">
+                        {capitalizeFirstLetter(admin.county)}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.role}
+                      <Switch
+                        checked={admin.active}
+                        onChange={setEnabled}
+                        className={`${
+                          admin.active ? "bg-blue-600" : "bg-gray-200"
+                        } relative inline-flex items-center h-6 rounded-full w-11`}
+                      >
+                        <span className="sr-only">Enable notifications</span>
+                        <span
+                          className={`${
+                            admin.active ? "translate-x-6" : "translate-x-1"
+                          } inline-block w-4 h-4 transform bg-white rounded-full`}
+                        />
+                      </Switch>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <a

@@ -20,7 +20,6 @@ const deploy = async () => {
     console.log("Attempting to deploy the contract to account: ", accounts[0]);
 
     const passwordHash = await bcrypt.hash("pass1234", 12);
-    console.log("PasswordHash: ", typeof passwordHash);
 
     const result = await new web3.eth.Contract(abi)
       .deploy({

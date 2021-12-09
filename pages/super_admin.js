@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import bcrypt from "bcryptjs";
 
 import Image from "next/image";
 import web3 from "../ethereum/web3";
 import LandRegistration from "../ethereum/LandRegistration";
-import bcrypt from "bcryptjs";
 import { Router } from "../routes";
+import { signToken } from "../utils/token";
+
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 import Button from "../components/Button";
@@ -24,6 +26,12 @@ export default class Admin extends Component {
     try {
       // Get the super admin's password from contract
       const accounts = await web3.eth.getAccounts();
+
+      if (!accounts.length)
+        return this.setState({
+          errorMessage: "Please login to your Metamask Account!",
+          loading: false,
+        });
 
       // Compare the passwords
       const superAdminPassword = await LandRegistration.methods
@@ -46,6 +54,10 @@ export default class Admin extends Component {
       this.setState({ loading: false });
       this.setState({ successMessage: "Logged in successully!" });
 
+      // Genereate a jwt token and store it in localstorage
+      const token = await signToken(accounts[0]);
+      localStorage.setItem("token", token);
+
       setTimeout(() => {
         Router.pushRoute("/super_admin/show_admins");
       }, 3000);
@@ -57,24 +69,18 @@ export default class Admin extends Component {
     this.setState({ loading: false });
   }
 
-  renderErrorAlert() {
-    if (this.state.errorMessage) {
+  renderAlert() {
+    if (this.state.errorMessage)
       return <ErrorAlert errorMessage={this.state.errorMessage} />;
-    }
-  }
-
-  renderSuccessAlert() {
-    if (this.state.successMessage) {
+    else if (this.state.successMessage && !this.state.errorMessage)
       return <SuccessAlert successMessage={this.state.successMessage} />;
-    }
   }
 
   render() {
     return (
       <div className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-lg w-full space-y-8 shadow-xl mb-40 p-20 rounded-md ">
-          {this.renderErrorAlert()}
-          {this.renderSuccessAlert()}
+          {this.renderAlert()}
           <div>
             <div className="mx-auto h-12 w-auto text-center">
               <Image
