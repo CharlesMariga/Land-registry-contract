@@ -26,7 +26,7 @@ export default class Button extends Component {
             ></div>
           )}
         </span>
-        Login
+        {this.props.text}
       </button>
     );
   }

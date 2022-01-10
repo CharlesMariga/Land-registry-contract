@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.7;
+
 contract LandRegistration {
     struct Admin {
         string firstName;
@@ -60,5 +62,12 @@ contract LandRegistration {
 
     function getAdminAddresses() public view restrictToSuperAdmin returns(address [] memory) {
         return adminsAdresses;
+    }
+
+    function editAdmin(string memory _firstName, string memory _lastName, string memory _county, address _adminAddress) public restrictToSuperAdmin {
+        Admin storage adminToEdit = admins[_adminAddress];
+        adminToEdit.firstName = _firstName;
+        adminToEdit.lastName = _lastName;
+        adminToEdit.county = _county;
     }
 }

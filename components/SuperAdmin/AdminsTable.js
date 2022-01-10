@@ -6,8 +6,7 @@ function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default function Example({ admins }) {
-  const [enabled, setEnabled] = useState(false);
+export default function Example({ admins, toggleAdminStatus, onEditClick }) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -61,9 +60,7 @@ export default function Example({ admins }) {
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {`${capitalizeFirstLetter(
-                              admin.firstName
-                            )} ${capitalizeFirstLetter(admin.lastName)}`}
+                            {admin.firstName} {admin.lastName}
                           </div>
                         </div>
                       </div>
@@ -81,7 +78,7 @@ export default function Example({ admins }) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <Switch
                         checked={admin.active}
-                        onChange={setEnabled}
+                        onChange={() => toggleAdminStatus(index)}
                         className={`${
                           admin.active ? "bg-blue-600" : "bg-gray-200"
                         } relative inline-flex items-center h-6 rounded-full w-11`}
@@ -98,6 +95,7 @@ export default function Example({ admins }) {
                       <a
                         href="#"
                         className="text-indigo-600 hover:text-indigo-900"
+                        onClick={() => onEditClick(admin)}
                       >
                         Edit
                       </a>

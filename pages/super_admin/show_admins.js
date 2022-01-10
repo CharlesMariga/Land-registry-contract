@@ -1,21 +1,29 @@
 import React from "react";
 
-import Table from "../../components/Table";
+import AdminsTable from "../../components/SuperAdmin/AdminsTable";
 import Auth from "../../components/Auth";
 import SuperAdminLayout from "../../components/layouts/SuperAdminLayout";
 import web3 from "../../ethereum/web3";
 import LandRegistration from "../../ethereum/LandRegistration";
 import PageLoader from "../../components/PageLoader";
 import ErrorAlert from "../../components/ErrorAlert";
+import AddAdminSideModal from "../../components/SuperAdmin/AddAdminSideModal";
+import EditAdminSideModal from "../../components/SuperAdmin/EditAdminSideModal";
+import Button from "../../components/BaseComponents/Button";
+import counties from "../../data/counties";
 class ShowAdmins extends React.Component {
   state = {
     loadingData: false,
     errorMessage: "",
     admins: [],
+    addAdminSideModalOpen: false,
+    editAdminSideModalOpen: false,
+    adminToEdit: {},
+    selectedCounties: [],
   };
 
   async componentDidMount() {
-    // Show the loadin page
+    // Show the loading page
     this.setState({ errorMessage: "", loadingData: true });
 
     try {
@@ -44,7 +52,152 @@ class ShowAdmins extends React.Component {
         };
       });
 
+      adminArr.forEach((el) => {
+        this.state.selectedCounties.push(el.county);
+        this.setState({
+          selectedCounties: this.state.selectedCounties,
+        });
+      });
       this.setState({ admins: adminArr, loadingData: false });
+    } catch (err) {
+      this.setState({ loadingData: false, errorMessage: err.message });
+    }
+  }
+
+  updateAdminsArrayInState(status, index) {
+    this.setState({
+      loadingData: false,
+      admins: this.state.admins.map((el, i) => {
+        if (index === i) {
+          console.log("El found");
+          console.log("Status: ", status);
+          el.active = status ? 0 : 1;
+        }
+
+        return el;
+      }),
+    });
+  }
+
+  async toggleAdminStatus(index) {
+    this.setState({ loadingData: true });
+
+    // Get the address of the admin and the current status
+    const admin = this.state.admins[index];
+    const adminAddress = admin.address;
+    const status = admin.active;
+
+    // Call the deactivateAdmin or activateAdmin methods on the contract
+    // Get accounts
+    const accounts = await web3.eth.getAccounts();
+
+    try {
+      if (status) {
+        // Deactivate
+        await LandRegistration.methods
+          .deactivateAdmin(adminAddress)
+          .send({ from: accounts[0] });
+
+        // Update state
+        this.updateAdminsArrayInState(status, index);
+      } else {
+        console.log("Activate run!");
+        // Activate
+        await LandRegistration.methods
+          .activateAdmin(adminAddress)
+          .send({ from: accounts[0] });
+
+        // Update state
+        this.updateAdminsArrayInState(status, index);
+      }
+    } catch (err) {
+      this.setState({ loadingData: false, errorMessage: err.message });
+    }
+  }
+
+  openAddAdminSideModal() {
+    this.setState({ addAdminSideModalOpen: true });
+  }
+
+  closeAddAdminSideModal() {
+    this.setState({ addAdminSideModalOpen: false });
+  }
+
+  openEditAdminSideModalOpen(admin) {
+    const { firstName, lastName, address } = admin;
+    const county = counties.find((el) => el.county === admin.county);
+    console.log("County: ", county);
+    this.setState({
+      editAdminSideModalOpen: true,
+      adminToEdit: { firstName, lastName, county, address },
+    });
+  }
+
+  closeEditAdminSideModal() {
+    this.setState({ editAdminSideModalOpen: false });
+  }
+
+  async updateAdmin(firstName, lastName, county, address) {
+    console.log("Firstname: ", firstName);
+    console.log("Lastname: ", lastName);
+    console.log("County: ", county);
+    console.log("Address: ", address);
+    this.setState({ loadingData: true });
+
+    try {
+      // Get accounts
+      const accounts = await web3.eth.getAccounts();
+      await LandRegistration.methods
+        .editAdmin(firstName, lastName, county, address)
+        .send({ from: accounts[0] });
+
+      // Update the admins state array
+      this.state.admins = this.state.admins.map((el) => {
+        if (el.address === address) {
+          el.firstName = firstName;
+          el.lastName = lastName;
+          el.county = county;
+        }
+
+        return el;
+      });
+
+      this.setState({ admins: this.state.admins });
+
+      this.setState({ loadingData: false });
+    } catch (err) {
+      this.setState({ loadingData: false, errorMessage: err.message });
+    }
+  }
+
+  async addAdmin(firstName, lastName, county, address) {
+    this.setState({ loadingData: true });
+
+    try {
+      // Get accounts
+      const accounts = await web3.eth.getAccounts();
+
+      await LandRegistration.methods
+        .addAdmin(firstName, lastName, counties[county].name, address)
+        .send({ from: accounts[0] });
+
+      // The admin to the admins array
+      const admin = {
+        firstName: firstName,
+        lastName: lastName,
+        address,
+        county: county,
+        active: 1,
+        imageUrl: "https://www.natours.dev/img/users/default.jpg",
+      };
+
+      this.state.admins.push(admin);
+      this.setState({ admin: this.state.admins });
+
+      // Add the county to the counties array
+      this.state.selectedCounties.push(counties[county].name);
+      this.setState({ selectedCounties: this.state.selectedCounties });
+      this.setState({ loadingData: false });
     } catch (err) {
       this.setState({ loadingData: false, errorMessage: err.message });
     }
@@ -58,7 +211,36 @@ class ShowAdmins extends React.Component {
     } else {
       return (
         <div>
-          <Table admins={this.state.admins} />
+          <AdminsTable
+            admins={this.state.admins}
+            toggleAdminStatus={this.toggleAdminStatus.bind(this)}
+            onEditClick={this.openEditAdminSideModalOpen.bind(this)}
+          />
+
+          <AddAdminSideModal
+            status={this.state.addAdminSideModalOpen}
+            onClose={this.closeAddAdminSideModal.bind(this)}
+            title="Add Admin"
+            selectedCounties={this.state.selectedCounties}
+            addAdmin={this.addAdmin.bind(this)}
+          />
+
+          <EditAdminSideModal
+            status={this.state.editAdminSideModalOpen}
+            onClose={this.closeEditAdminSideModal.bind(this)}
+            title="Edit Admin"
+            admin={this.state.adminToEdit}
+            updateAdmin={this.updateAdmin.bind(this)}
+            selectedCounties={this.state.selectedCounties}
+          />
+
+          <div className="flex justify-end mt-3">
+            <Button
+              type="button"
+              text="Add New Admin"
+              onButtonclick={this.openAddAdminSideModal.bind(this)}
+            />
+          </div>
         </div>
       );
     }

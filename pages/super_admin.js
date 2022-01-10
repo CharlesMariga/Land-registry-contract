@@ -9,7 +9,7 @@ import { signToken } from "../utils/token";
 
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
-import Button from "../components/Button";
+import LoadingButton from "../components/BaseComponents/LoadingButton";
 
 export default class Admin extends Component {
   state = {
@@ -121,7 +121,7 @@ export default class Admin extends Component {
             </div>
 
             <div>
-              <Button loading={this.state.loading} />
+              <LoadingButton loading={this.state.loading} text="Login" />
             </div>
           </form>
         </div>
