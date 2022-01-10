@@ -69,8 +69,6 @@ class ShowAdmins extends React.Component {
       loadingData: false,
       admins: this.state.admins.map((el, i) => {
         if (index === i) {
-          console.log("El found");
-          console.log("Status: ", status);
           el.active = status ? 0 : 1;
         }
 
@@ -101,7 +99,6 @@ class ShowAdmins extends React.Component {
         // Update state
         this.updateAdminsArrayInState(status, index);
       } else {
-        console.log("Activate run!");
         // Activate
         await LandRegistration.methods
           .activateAdmin(adminAddress)
@@ -126,7 +123,6 @@ class ShowAdmins extends React.Component {
   openEditAdminSideModalOpen(admin) {
     const { firstName, lastName, address } = admin;
     const county = counties.find((el) => el.county === admin.county);
-    console.log("County: ", county);
     this.setState({
       editAdminSideModalOpen: true,
       adminToEdit: { firstName, lastName, county, address },
@@ -138,10 +134,6 @@ class ShowAdmins extends React.Component {
   }
 
   async updateAdmin(firstName, lastName, county, address) {
-    console.log("Firstname: ", firstName);
-    console.log("Lastname: ", lastName);
-    console.log("County: ", county);
-    console.log("Address: ", address);
     this.setState({ loadingData: true });
 
     try {
@@ -173,7 +165,6 @@ class ShowAdmins extends React.Component {
   }
 
   async addAdmin(firstName, lastName, county, address) {
-    console.log("County number: ", county);
     this.setState({ loadingData: true });
 
     try {

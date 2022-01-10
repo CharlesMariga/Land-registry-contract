@@ -20,7 +20,6 @@ export default function EditAdminSideModal({
   const [address, setAddress] = useState("");
 
   useEffect(() => {
-    console.log("Admin: ", admin);
     setFirstName(admin.firstName);
     setLastName(admin.lastName);
     setCounty(admin.county);
