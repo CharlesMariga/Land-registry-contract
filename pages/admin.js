@@ -3,14 +3,60 @@ import { useState } from "react";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 import LoadingButton from "../components/BaseComponents/LoadingButton";
+import LandRegistration from "../ethereum/LandRegistration";
+import web3 from "../ethereum/web3";
+import { Router } from "../routes";
+import { signToken } from "../utils/token";
 
 export default function Admin() {
-  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSucessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function loginAdmin() {}
+  async function loginAdmin(e) {
+    e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
+    // Get the accounts
+    try {
+      // Get accounts
+      const accounts = await web3.eth.getAccounts();
+
+      if (!accounts.length)
+        return this.setState({
+          errorMessage: "Please login to your Metamask Account!",
+          loading: false,
+        });
+
+      // Login the admin
+      const login = await LandRegistration.methods
+        .loginAdmin()
+        .send({ from: accounts[0] });
+
+      if (!login) {
+        setLoading(false);
+        setErrorMessage(
+          "Unable to login! Please check your account and try again."
+        );
+      }
+
+      setLoading(false);
+      setSucessMessage("Logged in successfully!");
+
+      // Genereate a jwt token and store it in localstorage
+      const token = await signToken(accounts[0]);
+      localStorage.setItem("token", token);
+
+      // Route to the home page
+      setTimeout(() => {
+        Router.pushRoute("/admin/lands");
+      }, 3000);
+    } catch (err) {
+      setLoading(false);
+      setErrorMessage(err.message);
+    }
+  }
 
   function renderAlert() {
     if (errorMessage) return <ErrorAlert errorMessage={errorMessage} />;
@@ -37,28 +83,7 @@ export default function Admin() {
           <p className="mt-3 text-center">Administrator login:</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={loginAdmin.bind(this)}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <LoadingButton loading={loading} text="Login" />
-          </div>
+          <LoadingButton loading={loading} text="Login" />
         </form>
       </div>
     </div>

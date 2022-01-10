@@ -5,11 +5,7 @@ function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default function AdminsTable({
-  admins,
-  toggleAdminStatus,
-  onEditClick,
-}) {
+export default function AdminsTable({ lands }) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -22,13 +18,7 @@ export default function AdminsTable({
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Address
+                    Property Id
                   </th>
                   <th
                     scope="col"
@@ -40,7 +30,13 @@ export default function AdminsTable({
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Status
+                    Location
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {`Owner's Address`}
                   </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
@@ -48,7 +44,7 @@ export default function AdminsTable({
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {admins.map((admin, index) => (
+                {lands.map((admin, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -78,31 +74,8 @@ export default function AdminsTable({
                         {capitalizeFirstLetter(admin.county)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <Switch
-                        checked={admin.active}
-                        onChange={() => toggleAdminStatus(index)}
-                        className={`${
-                          admin.active ? "bg-blue-600" : "bg-gray-200"
-                        } relative inline-flex items-center h-6 rounded-full w-11`}
-                      >
-                        <span className="sr-only">Enable notifications</span>
-                        <span
-                          className={`${
-                            admin.active ? "translate-x-6" : "translate-x-1"
-                          } inline-block w-4 h-4 transform bg-white rounded-full`}
-                        />
-                      </Switch>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a
-                        href="#"
-                        className="text-indigo-600 hover:text-indigo-900"
-                        onClick={() => onEditClick(admin)}
-                      >
-                        Edit
-                      </a>
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"></td>
                   </tr>
                 ))}
               </tbody>

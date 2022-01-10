@@ -13,6 +13,7 @@ contract LandRegistration {
     address public superAdminAddress;
     string superAdminPassword;
     mapping (address => Admin) admins;
+    mapping (address => bool) addresses;
     string [] public counties;
     address [] public adminsAdresses;
     
@@ -46,6 +47,7 @@ contract LandRegistration {
         newAdmin.active = true;
 
         adminsAdresses.push(address(adminAddress));
+        addresses[adminAddress] = true;
     }
 
     function getAdmin(address adminAddress) public view restrictToSuperAdmin returns(Admin memory) {
@@ -70,4 +72,10 @@ contract LandRegistration {
         adminToEdit.lastName = _lastName;
         adminToEdit.county = _county;
     }
+
+    function loginAdmin() public view returns(bool){
+        require(addresses[msg.sender]);
+        return true;
+    }
 }
+

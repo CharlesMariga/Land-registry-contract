@@ -19,7 +19,7 @@ export default class Nav extends React.Component {
     localStorage.removeItem("token");
 
     // Route to the login page
-    Router.pushRoute("/super_admin");
+    Router.pushRoute("/");
   };
 
   render() {
