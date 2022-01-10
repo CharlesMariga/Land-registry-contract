@@ -16,7 +16,7 @@ export default function EditAdminSideModal({
 }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [county, setCounty] = useState(0);
+  const [county, setCounty] = useState(1);
   const [address, setAddress] = useState("");
 
   useEffect(() => {

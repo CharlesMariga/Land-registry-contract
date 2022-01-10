@@ -16,7 +16,7 @@ export default function AddAdminSideModal({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
-  const [county, setCounty] = useState(0);
+  const [county, setCounty] = useState(1);
 
   function submitAddAdminForm(e) {
     e.preventDefault();

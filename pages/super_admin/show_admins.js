@@ -148,7 +148,7 @@ class ShowAdmins extends React.Component {
       // Get accounts
       const accounts = await web3.eth.getAccounts();
       await LandRegistration.methods
-        .editAdmin(firstName, lastName, county, address)
+        .editAdmin(firstName, lastName, counties[county - 1].name, address)
         .send({ from: accounts[0] });
 
       // Update the admins state array
@@ -156,7 +156,7 @@ class ShowAdmins extends React.Component {
         if (el.address === address) {
           el.firstName = firstName;
           el.lastName = lastName;
-          el.county = county;
+          el.county = counties[county - 1].name;
         }
 
         return el;
@@ -168,9 +168,12 @@ class ShowAdmins extends React.Component {
     } catch (err) {
       this.setState({ loadingData: false, errorMessage: err.message });
     }
+
+    this.closeEditAdminSideModal();
   }
 
   async addAdmin(firstName, lastName, county, address) {
+    console.log("County number: ", county);
     this.setState({ loadingData: true });
 
     try {
@@ -178,15 +181,15 @@ class ShowAdmins extends React.Component {
       const accounts = await web3.eth.getAccounts();
 
       await LandRegistration.methods
-        .addAdmin(firstName, lastName, counties[county].name, address)
+        .addAdmin(firstName, lastName, counties[county - 1].name, address)
         .send({ from: accounts[0] });
 
-      // The admin to the admins array
+      // Add the admin to the admins array
       const admin = {
         firstName: firstName,
         lastName: lastName,
         address,
-        county: county,
+        county: counties[county - 1].name,
         active: 1,
         imageUrl: "https://www.natours.dev/img/users/default.jpg",
       };
@@ -201,6 +204,8 @@ class ShowAdmins extends React.Component {
     } catch (err) {
       this.setState({ loadingData: false, errorMessage: err.message });
     }
+
+    this.closeAddAdminSideModal();
   }
 
   renderContent() {
