@@ -94,7 +94,7 @@ export default function BuyRequests() {
         // Make available
         // Change land availability
         await LandRegistration.methods
-          .makeLandUnavailable(landId)
+          .makeLandAvailable(landId)
           .send({ from: accounts[0] });
       }
       // Update state

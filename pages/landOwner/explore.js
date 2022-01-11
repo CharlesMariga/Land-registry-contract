@@ -2,6 +2,9 @@ import LandOwnerLayout from "../../components/layouts/LandOwnerLayout";
 import { useState, useEffect } from "react";
 import web3 from "../../ethereum/web3";
 import LandRegistration from "../../ethereum/LandRegistration";
+import PageLoader from "../../components/PageLoader";
+import ErrorAlert from "../../components/ErrorAlert";
+import AvailableLandTable from "../../components/landOwner/AvailableLandTable";
 
 export default function SellRequests() {
   const [loadingData, setLoadingData] = useState(false);
@@ -47,11 +50,14 @@ export default function SellRequests() {
               ownerAddress: land.ownerAddress,
               adminAddress: land.adminAddress,
               marketValue: land.marketValue,
+              availability: land.availability,
               requestedForSale: land.requestedForSale,
               requestedByAddress: land.requestedByAddress,
             };
           })
-          .filter((land) => land.requestedForSale && land.requestedByAddress);
+          .filter(
+            (land) => land.availability && land.ownerAddress !== accounts[0]
+          );
 
         console.log(landsArr);
 
@@ -64,5 +70,19 @@ export default function SellRequests() {
     })();
   }, []);
 
-  return <LandOwnerLayout headerText="Available Land"></LandOwnerLayout>;
+  function renderContent() {
+    if (loadingData) {
+      return <PageLoader />;
+    } else if (errorMessage) {
+      return <ErrorAlert errorMessage={errorMessage} />;
+    } else {
+      return <AvailableLandTable lands={lands} />;
+    }
+  }
+
+  return (
+    <LandOwnerLayout headerText="Available Land">
+      {renderContent()}
+    </LandOwnerLayout>
+  );
 }
