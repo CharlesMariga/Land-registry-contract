@@ -1,4 +1,10 @@
-export default function Example({ label, placeholder, value, onInputChange }) {
+export default function Example({
+  label,
+  placeholder,
+  value,
+  onInputChange,
+  type,
+}) {
   return (
     <div>
       <label
@@ -8,7 +14,7 @@ export default function Example({ label, placeholder, value, onInputChange }) {
         {label}
       </label>
       <input
-        type="text"
+        type={type ? type : "text"}
         name="price"
         id="price"
         className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"

@@ -18,43 +18,48 @@ function Lands() {
 
   useEffect(() => {
     (async () => {
-      // Get the accounts
-      const accounts = await web3.eth.getAccounts();
+      try {
+        // Get the accounts
+        const accounts = await web3.eth.getAccounts();
 
-      //Get land counts
-      const landsCount = await LandRegistration.methods
-        .landsCount()
-        .call({ from: accounts[0] });
+        //Get land counts
+        const landsCount = await LandRegistration.methods
+          .landsCount()
+          .call({ from: accounts[0] });
 
-      // Get the lands
-      const landIdsRequests = [];
-      for (let i = 0; i < landsCount; i++) {
-        landIdsRequests.push(
-          LandRegistration.methods.landIdsArr(i).call({ from: accounts[0] })
+        // Get the lands
+        const landIdsRequests = [];
+        for (let i = 0; i < landsCount; i++) {
+          landIdsRequests.push(
+            LandRegistration.methods.landIdsArr(i).call({ from: accounts[0] })
+          );
+        }
+        const landIdsArr = await Promise.all(landIdsRequests);
+        const landsRequests = landIdsArr.map((el) =>
+          LandRegistration.methods.lands(el).call({ from: accounts[0] })
         );
+
+        const lands = await Promise.all(landsRequests);
+
+        // Filter the land based on the adminAddress
+        const landsArr = lands
+          .map((land) => {
+            return {
+              landId: land.landId,
+              surveyNumber: land.surveyNumber,
+              county: land.county,
+              location: land.location,
+              ownerAddress: land.ownerAddress,
+              adminAddress: land.adminAddress,
+            };
+          })
+          .filter((land) => land.adminAddress === accounts[0]);
+
+        setLands(landsArr);
+      } catch (err) {
+        setErrorMessage(err.message);
+        setLoadingData(false);
       }
-      const landIdsArr = await Promise.all(landIdsRequests);
-      const landsRequests = landIdsArr.map((el) =>
-        LandRegistration.methods.lands(el).call({ from: accounts[0] })
-      );
-
-      const lands = await Promise.all(landsRequests);
-
-      // Filter the land based on the adminAddress
-      const landsArr = lands
-        .map((land) => {
-          return {
-            landId: land.landId,
-            surveyNumber: land.surveyNumber,
-            county: land.county,
-            location: land.location,
-            ownerAddress: land.ownerAddress,
-            adminAddress: land.adminAddress,
-          };
-        })
-        .filter((land) => land.adminAddress === accounts[0]);
-
-      setLands(landsArr);
     })();
   }, []);
 
