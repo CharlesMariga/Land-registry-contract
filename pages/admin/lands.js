@@ -54,8 +54,6 @@ function Lands() {
         })
         .filter((land) => land.adminAddress === accounts[0]);
 
-      console.log("Lands Arr: ", landsArr);
-
       setLands(landsArr);
     })();
   }, []);
@@ -71,15 +69,9 @@ function Lands() {
     marketValue
   ) {
     setLoadingData(true);
-    console.log(location);
-    console.log(surveyNumber);
-    console.log(ownerAddress);
-    console.log(marketValue);
     try {
       // Get accounts
       const accounts = await web3.eth.getAccounts();
-
-      console.log("Accounts: ", accounts);
 
       const landId = uuidv4();
 
@@ -113,7 +105,6 @@ function Lands() {
 
       setLoadingData(false);
     } catch (err) {
-      console.log(err);
       setErrorMessage(err.message);
       setLoadingData(false);
     }

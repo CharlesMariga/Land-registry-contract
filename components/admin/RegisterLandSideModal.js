@@ -15,12 +15,7 @@ export default function RegisterLandSideModal({
   const [marketValue, setMarketValue] = useState("");
 
   function onSubmitForm(e) {
-    console.log("Form submitted!");
     e.preventDefault();
-    console.log(location);
-    console.log(surveryNumber);
-    console.log(ownerAddress);
-    console.log(marketValue);
     onRegisterLandFormSubmit(
       location,
       surveryNumber,
