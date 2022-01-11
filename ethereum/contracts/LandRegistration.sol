@@ -22,6 +22,18 @@ contract LandRegistration {
         string landId;
         address adminAddress;
     }
+
+    struct LandOwner {
+        string firstName;
+        string lastName;
+        string middleName;
+        string gender;
+        string email;
+        string phoneNumber;
+        string poBox;
+        string location;
+        address landOwnerAddress;
+    }
     
     address public superAdminAddress;
     string superAdminPassword;
@@ -33,6 +45,8 @@ contract LandRegistration {
     mapping (string => bool) public landIdsMapping;
     mapping (string => Land) public lands;
     uint256 public landsCount;
+    mapping (address => bool) public landOwners;
+    mapping (address => LandOwner) public landOwnersDetails;
     
     constructor(string memory password) {
         superAdminPassword = password;
@@ -128,8 +142,39 @@ contract LandRegistration {
 
         landsCount = landsCount + 1;
     }
+
+    function registerLandOwner() public returns(bool){
+        if (landOwners[msg.sender]) return true;
+        landOwners[msg.sender] = true;
+
+        LandOwner storage newLandOwner = landOwnersDetails[msg.sender];
+        newLandOwner.firstName = "";
+        newLandOwner.lastName = "";
+        newLandOwner.middleName = "";
+        newLandOwner.gender = "";
+        newLandOwner.email = "";
+        newLandOwner.phoneNumber = "";
+        newLandOwner.poBox = "";
+        newLandOwner.location = "";
+        newLandOwner.landOwnerAddress = msg.sender;
+
+        return true;
+    }
+
+    function updateLandOwner(string memory _firstName, string memory _lastName, string memory _middleName, string memory _gender, string memory _email, string memory _phoneNumber, string memory _poBox, string memory _location) public {
+        LandOwner storage landOwnerToEdit = landOwnersDetails[msg.sender];
+        landOwnerToEdit.firstName = _firstName;
+        landOwnerToEdit.lastName = _lastName;
+        landOwnerToEdit.middleName = _middleName;
+        landOwnerToEdit.gender = _gender;
+        landOwnerToEdit.email = _email;
+        landOwnerToEdit.phoneNumber = _phoneNumber;
+        landOwnerToEdit.poBox = _poBox;
+        landOwnerToEdit.location = _location;
+    }
 }
 
 
 // "charles", "mariga", "nairobi", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"
 // "ruaka", "1234", "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c", "12000", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", "abc123"
+// "charles", "njenga", "mariga", "male", "charles@gamil.com", "+254722334556", "8899-00100", "Westlands"

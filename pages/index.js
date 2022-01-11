@@ -9,7 +9,9 @@ export default function Admin() {
   const [successMessage, setSucessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function loginUser() {}
+  function loginUser(e) {
+    e.preventDefault();
+  }
 
   function renderAlert() {
     if (errorMessage) return <ErrorAlert errorMessage={errorMessage} />;
@@ -35,7 +37,7 @@ export default function Admin() {
           </h2>
           <p className="mt-3 text-center">User login:</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={loginUser.bind(this)}>
+        <form className="mt-8 space-y-6" onSubmit={(e) => loginUser(e)}>
           <LoadingButton loading={loading} text="Login" />
         </form>
       </div>
