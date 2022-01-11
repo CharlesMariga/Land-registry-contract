@@ -11,6 +11,13 @@ export default function Admin() {
 
   function loginUser(e) {
     e.preventDefault();
+    setLoading(true);
+    setErrorMessage("");
+
+    try {
+    } catch (err) {
+      set;
+    }
   }
 
   function renderAlert() {
