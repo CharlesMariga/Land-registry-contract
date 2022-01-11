@@ -3,20 +3,51 @@ import { useState } from "react";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 import LoadingButton from "../components/BaseComponents/LoadingButton";
+import LandRegistration from "../ethereum/LandRegistration";
+import web3 from "../ethereum/web3";
+import { Router } from "../routes";
+import { signToken } from "../utils/token";
 
 export default function Admin() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSucessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function loginUser(e) {
+  async function loginUser(e) {
     e.preventDefault();
     setLoading(true);
     setErrorMessage("");
 
     try {
+      // Get accounts
+      const accounts = await web3.eth.getAccounts();
+
+      // Login the user
+      const login = await LandRegistration.methods
+        .registerLandOwner()
+        .send({ from: accounts[0] });
+
+      if (!login) {
+        setLoading(false);
+        setErrorMessage(
+          "Unable to login! Please check your account and try again."
+        );
+      }
+
+      setLoading(false);
+      setSucessMessage("Logged in successfully!");
+
+      // Genereate a jwt token and store it in localstorage
+      const token = await signToken(accounts[0]);
+      localStorage.setItem("token", token);
+
+      // Route to the home page
+      setTimeout(() => {
+        Router.pushRoute("/landOwner/details");
+      }, 3000);
     } catch (err) {
-      set;
+      setErrorMessage(err.message);
+      setLoading(false);
     }
   }
 

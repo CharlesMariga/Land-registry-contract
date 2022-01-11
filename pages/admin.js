@@ -18,7 +18,6 @@ export default function Admin() {
     setErrorMessage("");
     setLoading(true);
 
-    // Get the accounts
     try {
       // Get accounts
       const accounts = await web3.eth.getAccounts();
