@@ -9,17 +9,35 @@ contract LandRegistration {
         string county;
         bool active;
     }
+
+    struct Land {
+        string county;
+        string location;
+        string surveyNumber;
+        address ownerAddress;
+        string marketValue;
+        bool availability;
+        bool requestedForSale;
+        address requestedByAddress;
+        string landId;
+        address adminAddress;
+    }
     
     address public superAdminAddress;
     string superAdminPassword;
-    mapping (address => Admin) admins;
+    mapping (address => Admin) public admins;
     mapping (address => bool) addresses;
     string [] public counties;
     address [] public adminsAdresses;
+    string [] public landIdsArr;
+    mapping (string => bool) public landIdsMapping;
+    mapping (string => Land) public lands;
+    uint256 public landsCount;
     
     constructor(string memory password) {
         superAdminPassword = password;
         superAdminAddress = msg.sender;
+        landsCount = 0;
     }
 
     function equal(string memory a, string memory b) private pure returns(bool) {
@@ -28,6 +46,11 @@ contract LandRegistration {
     
     modifier restrictToSuperAdmin {
         require(msg.sender == superAdminAddress);
+        _;
+    }
+
+    modifier restrictToAdmin {
+        require(addresses[msg.sender]);
         _;
     }
 
@@ -73,9 +96,40 @@ contract LandRegistration {
         adminToEdit.county = _county;
     }
 
-    function loginAdmin() public view returns(bool){
-        require(addresses[msg.sender]);
+    function loginAdmin() public view restrictToAdmin returns(bool){
         return true;
+    }
+
+    function getLandIds() public view restrictToAdmin returns(string [] memory) {
+        return landIdsArr;
+    }
+
+    function registerLand(string memory _location, string memory _surveryNumber, address _ownerAddress, string memory _marketValue, address _adminAddress, string memory _landId) public restrictToAdmin {
+        require(!landIdsMapping[_landId]);
+
+        // Add the landId to the landIdsMapping
+        landIdsMapping[_landId] = true;
+
+        // Add the landId to the landIdsArr
+        landIdsArr.push(_landId);
+
+        // Create a new land struct
+        Land storage newLand = lands[_landId];
+        newLand.county = admins[_adminAddress].county;
+        newLand.location = _location;
+        newLand.surveyNumber = _surveryNumber;
+        newLand.ownerAddress = _ownerAddress;
+        newLand.marketValue = _marketValue;
+        newLand.availability = false;
+        newLand.requestedForSale = false;
+        newLand.requestedByAddress = address(0);
+        newLand.landId = _landId;
+        newLand.adminAddress = _adminAddress;
+
+        landsCount = landsCount + 1;
     }
 }
 
+
+// "charles", "mariga", "nairobi", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"
+// "ruaka", "1234", "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c", "12000", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", "abc123"

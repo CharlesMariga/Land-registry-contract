@@ -3,7 +3,7 @@ import web3 from "./web3";
 
 const instance = new web3.eth.Contract(
   LandRegistration.abi,
-  "0x8B3e7beD2EDD73D67C7501f390A708B1B637989d"
+  "0x9f5CD3C4a78763d3F2C95816c7fBe40901b377f2"
 );
 
 export default instance;

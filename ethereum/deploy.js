@@ -26,7 +26,7 @@ const deploy = async () => {
         data: evm.bytecode.object,
         arguments: [passwordHash],
       })
-      .send({ from: accounts[0], gas: "2000000" });
+      .send({ from: accounts[0], gas: "3000000" });
 
     console.log("Contract deployed to ", result.options.address);
   } catch (err) {

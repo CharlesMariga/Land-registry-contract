@@ -3,14 +3,30 @@ import SideModal from "../BaseComponents/SideModal";
 import TextField from "../BaseComponents/TextField";
 import Button from "../BaseComponents/Button";
 
-export default function RegisterLandSideModal({ title, status, onClose }) {
+export default function RegisterLandSideModal({
+  title,
+  status,
+  onClose,
+  onRegisterLandFormSubmit,
+}) {
   const [location, setLocation] = useState("");
   const [surveryNumber, setSurveryNumber] = useState("");
   const [ownerAddress, setOwnerAddress] = useState("");
   const [marketValue, setMarketValue] = useState("");
 
   function onSubmitForm(e) {
+    console.log("Form submitted!");
     e.preventDefault();
+    console.log(location);
+    console.log(surveryNumber);
+    console.log(ownerAddress);
+    console.log(marketValue);
+    onRegisterLandFormSubmit(
+      location,
+      surveryNumber,
+      ownerAddress,
+      marketValue
+    );
   }
 
   return (
