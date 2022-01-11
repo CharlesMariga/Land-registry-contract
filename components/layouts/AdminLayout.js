@@ -12,6 +12,7 @@ export default class AdminLayout extends React.Component {
           logoUrl="/super_admin/show_admins"
           userNavigation={userNavigation}
           showNotification={false}
+          navigation={[]}
         />
         <Header headerText={this.props.headerText} />
         <main>

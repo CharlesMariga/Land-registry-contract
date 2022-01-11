@@ -1,4 +1,6 @@
-export default function AdminsTable({ lands }) {
+import { Switch } from "@headlessui/react";
+
+export default function AdminsTable({ lands, toggleLandAvailability }) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -35,10 +37,13 @@ export default function AdminsTable({ lands }) {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {`Owner's Address`}
+                    Market Value
                   </th>
-                  <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Make Available
                   </th>
                 </tr>
               </thead>
@@ -63,8 +68,28 @@ export default function AdminsTable({ lands }) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {land.ownerAddress}
+                        {land.marketValue}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <Switch
+                        checked={land.availability}
+                        onChange={() =>
+                          toggleLandAvailability(land.landId, land.availability)
+                        }
+                        className={`${
+                          land.availability ? "bg-blue-600" : "bg-gray-200"
+                        } relative inline-flex items-center h-6 rounded-full w-11`}
+                      >
+                        <span className="sr-only">Enable notifications</span>
+                        <span
+                          className={`${
+                            land.availability
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          } inline-block w-4 h-4 transform bg-white rounded-full`}
+                        />
+                      </Switch>
                     </td>
                   </tr>
                 ))}

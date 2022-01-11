@@ -189,10 +189,11 @@ class ShowAdmins extends React.Component {
       this.setState({ admin: this.state.admins });
 
       // Add the county to the counties array
-      this.state.selectedCounties.push(counties[county].name);
+      this.state.selectedCounties.push(counties[county - 1].name);
       this.setState({ selectedCounties: this.state.selectedCounties });
       this.setState({ loadingData: false });
     } catch (err) {
+      console.log(err);
       this.setState({ loadingData: false, errorMessage: err.message });
     }
 

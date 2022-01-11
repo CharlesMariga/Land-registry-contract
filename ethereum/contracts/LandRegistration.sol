@@ -172,6 +172,19 @@ contract LandRegistration {
         landOwnerToEdit.poBox = _poBox;
         landOwnerToEdit.location = _location;
     }
+
+    // Make Land Available
+    function makeLandAvailable(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.availability = true;
+    }
+
+
+    // Make Land Unavailable
+    function makeLandUnavailable(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.availability = false;
+    }
 }
 
 

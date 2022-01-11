@@ -22,7 +22,7 @@ function Lands() {
         // Get the accounts
         const accounts = await web3.eth.getAccounts();
 
-        //Get land counts
+        //Get land count
         const landsCount = await LandRegistration.methods
           .landsCount()
           .call({ from: accounts[0] });
