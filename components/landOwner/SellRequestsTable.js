@@ -1,6 +1,8 @@
-import { Switch } from "@headlessui/react";
-
-export default function AdminsTable({ lands, toggleLandAvailability }) {
+export default function SellRequetsTable({
+  lands,
+  acceptBuyingRequest,
+  declineBuyingRequest,
+}) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -84,22 +86,26 @@ export default function AdminsTable({ lands, toggleLandAvailability }) {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <Switch
-                        checked={land.availability}
-                        onChange={() => toggleLandAvailability(land.landId)}
-                        className={`${
-                          land.availability ? "bg-blue-600" : "bg-gray-200"
-                        } relative inline-flex items-center h-6 rounded-full w-11`}
+                      <div className="text-sm text-gray-900">
+                        {land.requestedByAddress}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        type="button"
+                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={() => acceptBuyingRequest(land.landId)}
                       >
-                        <span className="sr-only">Enable notifications</span>
-                        <span
-                          className={`${
-                            land.availability
-                              ? "translate-x-6"
-                              : "translate-x-1"
-                          } inline-block w-4 h-4 transform bg-white rounded-full`}
-                        />
-                      </Switch>
+                        Accept
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        onClick={() => declineBuyingRequest(land.landId)}
+                      >
+                        Decline
+                      </button>
                     </td>
                   </tr>
                 ))}

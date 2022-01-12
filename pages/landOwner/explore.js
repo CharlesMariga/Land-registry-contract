@@ -5,6 +5,7 @@ import LandRegistration from "../../ethereum/LandRegistration";
 import PageLoader from "../../components/PageLoader";
 import ErrorAlert from "../../components/ErrorAlert";
 import AvailableLandTable from "../../components/landOwner/AvailableLandTable";
+import { Router } from "../../routes";
 
 export default function SellRequests() {
   const [loadingData, setLoadingData] = useState(false);
@@ -87,15 +88,7 @@ export default function SellRequests() {
         .send({ from: accounts[0] });
 
       // Update the state
-      setLands(
-        lands.map((land) => {
-          if (land.landId === landId) {
-            land.requestedForSale = true;
-            land.requestedByAddress = accounts[0];
-          }
-          return land;
-        })
-      );
+      Router.pushRoute("/landOwner/buyRequests");
     } catch (err) {
       setErrorMessage(err.message);
       setLoadingData(false);

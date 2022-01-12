@@ -1,6 +1,4 @@
-import Button from "../BaseComponents/Button";
-
-export default function AvailableLandTable({ lands }) {
+export default function BuyingRequestsTable({ lands, buyLand, cancelRequest }) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -97,12 +95,16 @@ export default function AvailableLandTable({ lands }) {
                             ? "opacity-50 cursor-not-allowed"
                             : ""
                         }`}
+                        onClick={() => buyLand(land.landId)}
                       >
                         Buy Land
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                      <button
+                        className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        onClick={() => cancelRequest(land.landId)}
+                      >
                         Cancel Requests
                       </button>
                     </td>

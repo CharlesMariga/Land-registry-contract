@@ -5,6 +5,7 @@ import LandRegistration from "../../ethereum/LandRegistration";
 import PageLoader from "../../components/PageLoader";
 import ErrorAlert from "../../components/ErrorAlert";
 import BuyingRequetsTable from "../../components/landOwner/BuyingRequestsTable";
+import { Router } from "../../routes";
 
 export default function SellRequests() {
   const [loadingData, setLoadingData] = useState(false);
@@ -68,13 +69,61 @@ export default function SellRequests() {
     })();
   }, []);
 
+  async function buyLand(landId) {
+    setLoadingData(true);
+    setErrorMessage("");
+
+    try {
+      // Get the accounts
+      const accounts = await web3.eth.getAccounts();
+
+      // Make request
+      await LandRegistration.methods
+        .buyLand(landId)
+        .send({ from: accounts[0] });
+
+      // Update the state
+      Router.pushRoute("/landOwner/landOwned");
+    } catch (err) {
+      setErrorMessage(err.message);
+      setLoadingData(false);
+    }
+  }
+
+  async function cancelRequest(landId) {
+    setLoadingData(true);
+
+    try {
+      // Get the accounts
+      const accounts = await web3.eth.getAccounts();
+
+      // Cancel request
+      await LandRegistration.methods
+        .cancelBuyinRequest(landId)
+        .send({ from: accounts[0] });
+
+      // Update state
+      setLands(lands.filter((land) => land.landId !== landId));
+      setLoadingData(false);
+    } catch (err) {
+      setErrorMessage(err.message);
+      setLoadingData(false);
+    }
+  }
+
   function renderContent() {
     if (loadingData) {
       return <PageLoader />;
     } else if (errorMessage) {
       return <ErrorAlert errorMessage={errorMessage} />;
     } else {
-      return <BuyingRequetsTable lands={lands} />;
+      return (
+        <BuyingRequetsTable
+          lands={lands}
+          buyLand={buyLand}
+          cancelRequest={cancelRequest}
+        />
+      );
     }
   }
 

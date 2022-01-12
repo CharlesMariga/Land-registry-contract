@@ -21,6 +21,7 @@ contract LandRegistration {
         address requestedByAddress;
         string landId;
         address adminAddress;
+        bool allowedToBuy;
     }
 
     struct LandOwner {
@@ -191,9 +192,43 @@ contract LandRegistration {
         landToEdit.requestedForSale = true;
         landToEdit.requestedByAddress = msg.sender;
     }
+
+
+    // Cancel a buying request
+    function cancelBuyinRequest(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.requestedForSale = false;
+        landToEdit.requestedByAddress = address(0);
+    }
+
+    // Buy land
+    function buyLand(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.ownerAddress = msg.sender;
+        landToEdit.availability = false;
+        landToEdit.requestedForSale = false;
+        landToEdit.requestedByAddress = address(0);
+        landToEdit.allowedToBuy = false;
+    }
+
+    // Accept a buying request
+    function acceptBuyingRequest(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.allowedToBuy = true;
+    }
+
+    // Decline a buying request
+    function declineBuyingRequest(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.allowedToBuy = false;
+        landToEdit.requestedForSale = false;
+        landToEdit.requestedByAddress = address(0);
+    }
 }
 
-
 // "charles", "mariga", "nairobi", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"
-// "ruaka", "1234", "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c", "12000", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", "abc123"
+// "Kilimani", "NRB123", "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db", "12000000", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2", "53d1f93f-7995-4bae-8d82-6c95abcc9a5e"
+
+// "Mike", "Muraya", "Nairobi", "0xF80f649Fd4612B74AD65a07982Bd48bE182C7e14"
+// "Kilimani", "NRB123", "0x96eF8ff41433e4D67d1149262eA9717645942FcF", "12000000", "0xF80f649Fd4612B74AD65a07982Bd48bE182C7e14", "53d1f93f-7995-4bae-8d82-6c95abcc9a5e"
 // "charles", "njenga", "mariga", "male", "charles@gamil.com", "+254722334556", "8899-00100", "Westlands"
