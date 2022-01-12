@@ -56,7 +56,10 @@ export default function SellRequests() {
             };
           })
           .filter(
-            (land) => land.availability && land.ownerAddress !== accounts[0]
+            (land) =>
+              land.availability &&
+              land.ownerAddress !== accounts[0] &&
+              !land.requestedForSale
           );
 
         console.log(landsArr);
@@ -70,13 +73,47 @@ export default function SellRequests() {
     })();
   }, []);
 
+  async function sendRequestToBuyLand(landId) {
+    setLoadingData(true);
+    setErrorMessage("");
+
+    try {
+      // Get the accounts
+      const accounts = await web3.eth.getAccounts();
+
+      // Make request
+      await LandRegistration.methods
+        .makeRequestToBuy(landId)
+        .send({ from: accounts[0] });
+
+      // Update the state
+      setLands(
+        lands.map((land) => {
+          if (land.landId === landId) {
+            land.requestedForSale = true;
+            land.requestedByAddress = accounts[0];
+          }
+          return land;
+        })
+      );
+    } catch (err) {
+      setErrorMessage(err.message);
+      setLoadingData(false);
+    }
+  }
+
   function renderContent() {
     if (loadingData) {
       return <PageLoader />;
     } else if (errorMessage) {
       return <ErrorAlert errorMessage={errorMessage} />;
     } else {
-      return <AvailableLandTable lands={lands} />;
+      return (
+        <AvailableLandTable
+          lands={lands}
+          requestToBuyLand={sendRequestToBuyLand}
+        />
+      );
     }
   }
 

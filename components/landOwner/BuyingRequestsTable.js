@@ -1,6 +1,6 @@
 import Button from "../BaseComponents/Button";
 
-export default function AvailableLandTable({ lands, requestToBuyLand }) {
+export default function AvailableLandTable({ lands }) {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -37,7 +37,7 @@ export default function AvailableLandTable({ lands, requestToBuyLand }) {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Market Value
+                    Market ValueRE
                   </th>
                   <th
                     scope="col"
@@ -49,7 +49,13 @@ export default function AvailableLandTable({ lands, requestToBuyLand }) {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Request to buy land
+                    Buy
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Cancel
                   </th>
                 </tr>
               </thead>
@@ -83,10 +89,22 @@ export default function AvailableLandTable({ lands, requestToBuyLand }) {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Button
-                        text="Send Request"
-                        onButtonclick={() => requestToBuyLand(land.landId)}
-                      />
+                      <button
+                        type="button"
+                        disabled={!land.allowedToBuy}
+                        className={`group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                          !land.allowedToBuy
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                      >
+                        Buy Land
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button className="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Cancel Requests
+                      </button>
                     </td>
                   </tr>
                 ))}

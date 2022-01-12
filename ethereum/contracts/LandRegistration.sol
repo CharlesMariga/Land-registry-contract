@@ -179,11 +179,17 @@ contract LandRegistration {
         landToEdit.availability = true;
     }
 
-
     // Make Land Unavailable
     function makeLandUnavailable(string memory _landId) public {
         Land storage landToEdit = lands[_landId];
         landToEdit.availability = false;
+    }
+
+    // Make request to buy
+    function makeRequestToBuy(string memory _landId) public {
+        Land storage landToEdit = lands[_landId];
+        landToEdit.requestedForSale = true;
+        landToEdit.requestedByAddress = msg.sender;
     }
 }
 
