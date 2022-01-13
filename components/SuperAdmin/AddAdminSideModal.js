@@ -10,7 +10,6 @@ export default function AddAdminSideModal({
   status,
   onClose,
   title,
-  selectedCounties,
   addAdmin,
 }) {
   const [firstName, setFirstName] = useState("");
@@ -54,9 +53,7 @@ export default function AddAdminSideModal({
           <div className="mt-3">
             <SelectInput
               label="County"
-              items={counties.filter(
-                (el) => !selectedCounties.includes(el.name)
-              )}
+              items={counties}
               value={county}
               onInputChange={setCounty}
             />
